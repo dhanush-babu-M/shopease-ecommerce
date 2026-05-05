@@ -1,0 +1,224 @@
+{
+  "info": {
+    "name": "ShopEase Backend API",
+    "description": "Complete test suite for ShopEase Backend (Auth, Products, Cart, Orders, Wishlist, Reviews)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1️⃣ Auth",
+      "item": [
+        {
+          "name": "1. Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Poorna\",\n  \"lastName\": \"Kumar\",\n  \"email\": \"admin@shopease.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "2. Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+                  "    console.log(\"Token automatically saved!\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@shopease.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2️⃣ Products",
+      "item": [
+        {
+          "name": "1. Add Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Gaming Laptop\",\n  \"description\": \"High performance gaming laptop\",\n  \"price\": 1200.00,\n  \"category\": \"Electronics\",\n  \"stock\": 10,\n  \"imageUrl\": \"laptop.png\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "2. Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3️⃣ Cart",
+      "item": [
+        {
+          "name": "1. Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cart/add?productId=1&quantity=2",
+              "host": ["{{base_url}}"],
+              "path": ["cart", "add"],
+              "query": [
+                { "key": "productId", "value": "1" },
+                { "key": "quantity", "value": "2" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. View Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cart",
+              "host": ["{{base_url}}"],
+              "path": ["cart"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4️⃣ Orders",
+      "item": [
+        {
+          "name": "1. Place Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/place?address=123 Tech Street, Chennai",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "place"],
+              "query": [
+                { "key": "address", "value": "123 Tech Street, Chennai" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/my",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "my"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5️⃣ Wishlist & Reviews",
+      "item": [
+        {
+          "name": "1. Add to Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wishlist/add/1",
+              "host": ["{{base_url}}"],
+              "path": ["wishlist", "add", "1"]
+            }
+          }
+        },
+        {
+          "name": "2. Add Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews?productId=1&rating=5&comment=Amazing laptop!",
+              "host": ["{{base_url}}"],
+              "path": ["reviews"],
+              "query": [
+                { "key": "productId", "value": "1" },
+                { "key": "rating", "value": "5" },
+                { "key": "comment", "value": "Amazing laptop!" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
